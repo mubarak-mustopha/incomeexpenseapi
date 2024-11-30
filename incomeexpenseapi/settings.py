@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # third_party
     "rest_framework",
+    "drf_yasg",
     # local
     "authentication",
 ]
@@ -87,6 +88,9 @@ DATABASES = {
 
 REST_FRAMEWORK = {
     "NON_FIELD_ERRORS_KEY": "error",
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
 }
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -125,3 +129,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = "/static/"
+
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# EMAIL_USE_SSL = True
+# EMAIL_HOST = "smtp.gmail.com"
+# EMAIL_PORT = 465
+# EMAIL_HOST_USER = "djangotest021@gmail.com"  # os.environ.get("EMAIL_HOST_USER")
+# EMAIL_HOST_PASSWORD = "lrmljfzrkrvooexl"  # os.environ.get("EMAIL_HOST_PASSWORD")
