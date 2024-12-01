@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "wbu)wp)+w8-4n)d33t-z84!d&uvp@gnh=+62i+qe@0(w3#kbhc"
+SECRET_KEY = "wbu)wp)+w8-4n)d33t-z84!d&uvp@gnh=+62i+qe@0(w3#kbhc" 
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # third_party
     "rest_framework",
+    "drf_yasg",
     # local
     "authentication",
 ]
@@ -126,3 +127,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = "/static/"
+
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+# EMAIL_HOST
+# EMAIL_PORT
+# EMAIL_USE_SSL
+# EMAIL_HOST_USER
+# EMAIL_HOST_PASSWORD
