@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import User
-from .serializers import RegisterSerializer, EmailVerficationSerializer
+from .serializers import RegisterSerializer, EmailVerficationSerializer, LoginSerializer
 from .utils import Util
 
 
@@ -79,3 +79,13 @@ class VerifyEmail(views.APIView):
             )
         except jwt.exceptions.DecodeError as identifier:
             return Response({"error": "Invalid token"}, status=status.HTTP_200_OK)
+
+
+class LoginAPIView(generics.GenericAPIView):
+    serializer_class = LoginSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
