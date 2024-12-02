@@ -38,6 +38,7 @@ urlpatterns = []
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("auth/", include("authentication.urls")),
+    path("expenses/", include("expenses.urls")),
     path(
         "",
         schema_view.with_ui("swagger", cache_timeout=0),
