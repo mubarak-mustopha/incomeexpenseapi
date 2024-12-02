@@ -1,10 +1,10 @@
-from typing import Any
 from django.contrib.auth.models import (
     AbstractBaseUser,
     PermissionsMixin,
     BaseUserManager,
 )
 from django.db import models
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class UserManager(BaseUserManager):
@@ -49,3 +49,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+    @property
+    def tokens(self):
+        refresh = RefreshToken.for_user(self)
+        return {
+            "resfresh": str(refresh),
+            "access": str(refresh.access_token),
+        }
