@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "wbu)wp)+w8-4n)d33t-z84!d&uvp@gnh=+62i+qe@0(w3#kbhc" 
+SECRET_KEY = "wbu)wp)+w8-4n)d33t-z84!d&uvp@gnh=+62i+qe@0(w3#kbhc"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "drf_yasg",
     # local
     "authentication",
+    "expenses",
 ]
 
 MIDDLEWARE = [
@@ -74,6 +75,21 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "incomeexpenseapi.wsgi.application"
 
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+        }
+    },
+}
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    )
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
