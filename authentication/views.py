@@ -9,12 +9,14 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import User
+from .renderers import UserRenderer
 from .serializers import RegisterSerializer, EmailVerifySerializer, LoginSerializer
 from .utils import Util
 
 
 class RegisterView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
+    renderer_classes = (UserRenderer,)
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
