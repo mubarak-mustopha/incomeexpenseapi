@@ -12,7 +12,9 @@ from .serializers import ExpenseSerializer
 class ExpenseListAPIView(ListCreateAPIView):
     queryset = Expense.objects.all()
     serializer_class = ExpenseSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
 
     def perform_create(self, serializer):
         return serializer.save(owner=self.request.user)
@@ -21,7 +23,10 @@ class ExpenseListAPIView(ListCreateAPIView):
 class ExpenseDetailAPIView(RetrieveUpdateDestroyAPIView):
     queryset = Expense.objects.all()
     serializer_class = ExpenseSerializer
-    permission_classes = [permissions.IsAuthenticated, IsOwner]
+    permission_classes = [
+        permissions.IsAuthenticated,
+        IsOwner,
+    ]
     lookup_field = "id"
 
     def perform_create(self, serializer):
