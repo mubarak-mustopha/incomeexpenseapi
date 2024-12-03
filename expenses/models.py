@@ -21,3 +21,9 @@ class Expense(models.Model):
     description = models.TextField()
     owner = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     date = models.DateField(null=False, blank=False)
+
+    class Meta:
+        ordering = ["-date"]
+
+    def __str__(self) -> str:
+        return str(self.owner) + "'s expense"
