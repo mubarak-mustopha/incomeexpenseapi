@@ -2,16 +2,16 @@ from django.shortcuts import render
 from rest_framework import permissions
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
-from .models import Expense
+from .models import Income
 from .permissions import IsOwner
-from .serializers import ExpenseSerializer
+from .serializers import IncomeSerializer
 
 # Create your views here.
 
 
-class ExpenseListAPIView(ListCreateAPIView):
-    queryset = Expense.objects.all()
-    serializer_class = ExpenseSerializer
+class IncomeListAPIView(ListCreateAPIView):
+    queryset = Income.objects.all()
+    serializer_class = IncomeSerializer
     permission_classes = [
         permissions.IsAuthenticated,
     ]
@@ -20,9 +20,9 @@ class ExpenseListAPIView(ListCreateAPIView):
         return serializer.save(owner=self.request.user)
 
 
-class ExpenseDetailAPIView(RetrieveUpdateDestroyAPIView):
-    queryset = Expense.objects.all()
-    serializer_class = ExpenseSerializer
+class IncomeDetailAPIView(RetrieveUpdateDestroyAPIView):
+    queryset = Income.objects.all()
+    serializer_class = IncomeSerializer
     permission_classes = [
         permissions.IsAuthenticated,
         IsOwner,
@@ -31,4 +31,4 @@ class ExpenseDetailAPIView(RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return Expense.objects.filter(owner=user)
+        return Income.objects.filter(owner=user)
