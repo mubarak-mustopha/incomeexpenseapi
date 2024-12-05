@@ -10,7 +10,14 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import User
 from .renderers import UserRenderer
-from .serializers import RegisterSerializer, EmailVerifySerializer, LoginSerializer
+from .serializers import (
+    RegisterSerializer,
+    EmailVerifySerializer,
+    LoginSerializer,
+    PaswordResetEmailSerializer,
+    PasswordResetConfirmSerializer,
+    PasswordResetCompleteSerializer,
+)
 from .utils import Util
 
 
@@ -85,3 +92,49 @@ class LoginAPIView(generics.GenericAPIView):
 
         data = serializer.validated_data
         return Response(data, status=status.HTTP_200_OK)
+
+
+class PaswordResetAPIView(generics.GenericAPIView):
+    serializer_class = PaswordResetEmailSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(
+            data=request.data, context=self.get_serializer_context()
+        )
+        serializer.is_valid(raise_exception=True)
+
+        return Response(
+            {"success": True, "message": "Password reset email successfully sent."}
+        )
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["request"] = self.request
+        return context
+
+
+class PasswordResetConfirmAPIView(generics.GenericAPIView):
+    serializer_class = PasswordResetConfirmSerializer
+
+    def get(self, request, uidb64, token):
+        print(self.kwargs)
+        serializer = self.serializer_class(data={"uidb64": uidb64, "token": token})
+        serializer.is_valid(raise_exception=True)
+
+        return Response(
+            {"success": True, "data": serializer.validated_data},
+            status=status.HTTP_200_OK,
+        )
+
+
+class PasswordResetCompleteAPIView(generics.GenericAPIView):
+    serializer_class = PasswordResetCompleteSerializer
+
+    def patch(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        return Response(
+            {"success": True, "message": "Password reset successful"},
+            status=status.HTTP_200_OK,
+        )
