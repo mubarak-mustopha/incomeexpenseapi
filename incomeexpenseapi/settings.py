@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "expenses",
     "income",
     "userstats",
+    "social_auth",
 ]
 
 SWAGGER_SETTINGS = {
@@ -88,7 +89,9 @@ ROOT_URLCONF = "incomeexpenseapi.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [
+            os.path.join(BASE_DIR, "templates"),
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

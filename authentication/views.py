@@ -120,6 +120,12 @@ class RequestPasswordResetEmail(generics.GenericAPIView):
         email = serializer.validated_data.get("email")
         if User.objects.filter(email=email).exists():
             user = User.objects.get(email=email)
+            if not user.auth_provider == "email":
+                return Response(
+                    {"message": "Only non social users can request password reset"},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+
             uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
             token = PasswordResetTokenGenerator().make_token(user)
 
@@ -143,6 +149,8 @@ class RequestPasswordResetEmail(generics.GenericAPIView):
 
 
 class PasswordTokenCheckAPI(generics.GenericAPIView):
+    serializer_class = SetNewPasswordSerializer
+
     def get(self, request, uidb64, token):
         try:
             id = smart_str(urlsafe_base64_decode(uidb64))

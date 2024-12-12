@@ -16,6 +16,7 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -40,6 +41,7 @@ urlpatterns = [
     path("auth/", include("authentication.urls")),
     path("expenses/", include("expenses.urls")),
     path("income/", include("income.urls")),
+    path("social_auth/", include("social_auth.urls")),
     path("userstats/", include("userstats.urls")),
     path(
         "",
@@ -47,4 +49,7 @@ urlpatterns = [
         name="schema-swagger-ui",
     ),
     path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
+] + [
+    path("home", TemplateView.as_view(template_name="home.html"), name="home"),
+    path("google/", TemplateView.as_view(template_name="google.html")),
 ]

@@ -8,7 +8,7 @@ from .models import User
 
 class UserAdmin(UserAdmin):
     model = User
-    list_display = ["username", "email", "is_verified"]
+    list_display = ["username", "email", "is_verified", "auth_provider"]
 
 
 admin.site.register(User, UserAdmin)
