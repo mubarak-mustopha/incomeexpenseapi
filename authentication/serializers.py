@@ -54,6 +54,10 @@ class LoginSerializer(serializers.Serializer):
             raise AuthenticationFailed("Invalid credentials")
         if not user.is_active:
             raise AuthenticationFailed("Account is disabled, pls contact admin")
+        if not user.auth_provider == "email":
+            raise AuthenticationFailed(
+                f"Pls login with your auth provider: {user.auth_provider}"
+            )
         if not user.is_verified:
             raise AuthenticationFailed("Email not verified")
 
