@@ -16,11 +16,11 @@ def generate_username(name):
 
 
 def register_social_user(user_id, name, email, provider):
-    user = User.objects.filter(email=email)
+    user = User.objects.filter(email=email).first()
 
-    if user.exists():
+    if user:
 
-        if provider == user.first().auth_provider:
+        if provider == user.auth_provider:
             auth_user = authenticate(email=email, password=config("SOCIAL_SECRET"))
 
             return {

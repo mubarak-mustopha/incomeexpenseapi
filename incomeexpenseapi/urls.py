@@ -52,4 +52,5 @@ urlpatterns = [
 ] + [
     path("home", TemplateView.as_view(template_name="home.html"), name="home"),
     path("google/", TemplateView.as_view(template_name="google.html")),
+    path("facebook/", TemplateView.as_view(template_name="facebook.html")),
 ]
