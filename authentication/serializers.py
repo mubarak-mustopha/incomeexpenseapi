@@ -9,6 +9,7 @@ from django.utils.encoding import (
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 from rest_framework import serializers
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from rest_framework.exceptions import AuthenticationFailed
 
 from .models import User
@@ -105,3 +106,21 @@ class SetNewPasswordSerializer(serializers.Serializer):
             return user
         except Exception:
             raise AuthenticationFailed("The reset link is invalid", 401)
+
+
+class LogoutSerializer(serializers.Serializer):
+
+    default_error_messages = {"bad_token": ("Token is expired or invalid.")}
+
+    refresh = serializers.CharField()
+
+    def validate(self, attrs):
+        self.token = attrs["refresh"]
+        return super().validate(attrs)
+
+    def save(self, **kwargs):
+        try:
+            RefreshToken(self.token).blacklist()
+
+        except TokenError:
+            self.fail("bad_token")

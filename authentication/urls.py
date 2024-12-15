@@ -8,6 +8,7 @@ from .views import (
     RequestPasswordResetEmail,
     PasswordTokenCheckAPI,
     SetNewPasswordAPIView,
+    LogoutAPIView,
 )
 
 urlpatterns = [
@@ -29,6 +30,7 @@ urlpatterns = [
         name="password-reset-complete",
     ),
     path("login/", LoginAPIView.as_view(), name="login"),
+    path("logout/", LogoutAPIView.as_view(), name="logout"),
     path("email-verify", VerifyEmail.as_view(), name="email-verify"),
     path("", include("django.contrib.auth.urls")),
 ]

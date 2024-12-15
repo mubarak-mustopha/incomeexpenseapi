@@ -13,7 +13,7 @@ from django.utils.encoding import (
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import generics, status, views
+from rest_framework import generics, permissions, status, views
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -25,6 +25,7 @@ from .serializers import (
     LoginSerializer,
     RequestPasswordResetEmailSerializer,
     SetNewPasswordSerializer,
+    LogoutSerializer,
 )
 from .utils import Util
 
@@ -187,3 +188,17 @@ class SetNewPasswordAPIView(generics.GenericAPIView):
             {"success": True, "message": "Password rest successsful"},
             status=status.HTTP_200_OK,
         )
+
+
+class LogoutAPIView(generics.GenericAPIView):
+    serializer_class = LogoutSerializer
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
