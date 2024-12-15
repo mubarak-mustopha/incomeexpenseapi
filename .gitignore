@@ -7,3 +7,4 @@ db.sqlite3
 *.json
 *.sql
 bash.exe.stackdump
+templates/
