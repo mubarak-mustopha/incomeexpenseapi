@@ -78,6 +78,7 @@ class LoginSerializer(serializers.Serializer):
 
 class RequestPasswordResetEmailSerializer(serializers.Serializer):
     email = serializers.EmailField()
+    redirect_url = serializers.URLField(required=False, allow_blank=True)
 
     def validate(self, attrs):
         return super().validate(attrs)
