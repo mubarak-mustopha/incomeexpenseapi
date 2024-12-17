@@ -5,6 +5,7 @@ from django.urls import reverse
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -14,6 +15,7 @@ from .serializers import (
     RegisterSerializer,
     EmailVerifySerializer,
     LoginSerializer,
+    LogoutSerializer,
     PaswordResetEmailSerializer,
     PasswordResetConfirmSerializer,
     PasswordResetCompleteSerializer,
@@ -138,3 +140,15 @@ class PasswordResetCompleteAPIView(generics.GenericAPIView):
             {"success": True, "message": "Password reset successful"},
             status=status.HTTP_200_OK,
         )
+
+
+class LogoutAPIView(generics.GenericAPIView):
+    serializer_class = LogoutSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)

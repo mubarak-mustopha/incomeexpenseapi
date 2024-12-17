@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.utils.encoding import force_bytes, force_str, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from rest_framework import serializers
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.exceptions import AuthenticationFailed
 
 from .models import User
@@ -151,3 +152,17 @@ class PasswordResetCompleteSerializer(serializers.Serializer):
                 raise (e)
             raise AuthenticationFailed("Invalid link, pls request a new one", code=401)
         return super().validate(attrs)
+
+
+class LogoutSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
+
+    def validate_refresh(self, value):
+        try:
+            self.token = RefreshToken(value)
+            return value
+        except:
+            raise serializers.ValidationError("Token is invalid or expired.")
+
+    def save(self, **kwargs):
+        return self.token.blacklist()

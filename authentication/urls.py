@@ -10,10 +10,12 @@ from .views import (
     PaswordResetAPIView,
     PasswordResetConfirmAPIView,
     PasswordResetCompleteAPIView,
+    LogoutAPIView
 )
 
 urlpatterns = [
     path("login/", LoginAPIView.as_view(), name="login"),
+    path("logout/", LogoutAPIView.as_view(), name="logout"),
     path("password_reset/", PaswordResetAPIView.as_view(), name="password_reset"),
     path(
         "password_reset_confirm/<uidb64>/<token>/",
