@@ -71,11 +71,15 @@ class LoginSerializer(serializers.Serializer):
 
 class PaswordResetEmailSerializer(serializers.Serializer):
     email = serializers.EmailField(min_length=8, max_length=255)
+    redirect_url = serializers.URLField(required=False)
 
     def validate(self, attrs):
         email = attrs.get("email")
+        redirect_url = attrs.get("redirect_url", "")
+
         request = self.context.get("request")
         user = User.objects.filter(email=email)
+
         if user.exists():
             user = user.first()
             uidb64 = urlsafe_base64_encode(force_bytes(user.id))
@@ -87,7 +91,7 @@ class PaswordResetEmailSerializer(serializers.Serializer):
                 "password_reset_confirm", kwargs={"uidb64": uidb64, "token": token}
             )
 
-            abs_url = f"{protocol}://{domain}{rel_url}"
+            abs_url = f"{protocol}://{domain}{rel_url}?redirect_url={redirect_url}"
             subject = "Reset your password"
             body = f"Hi\nClick the link below to reset your password\n{abs_url}"
 
@@ -103,27 +107,7 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
     token = serializers.CharField(min_length=6)
 
     def validate(self, attrs):
-        uidb64 = attrs.get("uidb64")
-        token = attrs.get("token")
-
-        try:
-            id = force_str(urlsafe_base64_decode(uidb64))
-            user = User.objects.get(id=id)
-
-            if not PasswordResetTokenGenerator().check_token(user, token):
-                raise AuthenticationFailed(
-                    "Invalid or expired link, pls request a new one", code=401
-                )
-            return {
-                "email": user.email,
-                "uidb64": uidb64,
-                "token": token,
-            }
-
-        except Exception as e:
-            if isinstance(e, AuthenticationFailed):
-                raise (e)
-            raise AuthenticationFailed("Invalid link, pls request a new one", code=401)
+        return super().validate(attrs)
 
 
 class PasswordResetCompleteSerializer(serializers.Serializer):

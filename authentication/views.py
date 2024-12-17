@@ -1,7 +1,12 @@
 import jwt
+from decouple import config
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.sites.shortcuts import get_current_site
 from django.conf import settings
+from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.utils.encoding import force_str
+from django.utils.http import urlsafe_base64_decode
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, status
@@ -21,6 +26,10 @@ from .serializers import (
     PasswordResetCompleteSerializer,
 )
 from .utils import Util
+
+
+class CustomHttpResponseRedirect(HttpResponseRedirect):
+    allowed_schemes = (config("APP_SCHEME"), "http", "https")
 
 
 class RegisterView(generics.GenericAPIView):
@@ -123,10 +132,27 @@ class PasswordResetConfirmAPIView(generics.GenericAPIView):
         serializer = self.serializer_class(data={"uidb64": uidb64, "token": token})
         serializer.is_valid(raise_exception=True)
 
-        return Response(
-            {"success": True, "data": serializer.validated_data},
-            status=status.HTTP_200_OK,
-        )
+        uidb64 = serializer.validated_data["uidb64"]
+        token = serializer.validated_data["token"]
+
+        frontend_url = config("FRONTEND_URL")
+        redirect_url = request.GET.get("redirect_url") or frontend_url
+        # import pdb
+
+        # pdb.set_trace()
+        try:
+            id = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(id=id)
+
+            if not PasswordResetTokenGenerator().check_token(user, token):
+                return CustomHttpResponseRedirect(f"{redirect_url}?token_valid=false")
+            else:
+                return CustomHttpResponseRedirect(
+                    f"{redirect_url}?token_valid=true&email={user.email}&uidb64={uidb64}&token={token}"
+                )
+
+        except Exception as e:
+            return CustomHttpResponseRedirect(f"{redirect_url}?token_valid=false")
 
 
 class PasswordResetCompleteAPIView(generics.GenericAPIView):
